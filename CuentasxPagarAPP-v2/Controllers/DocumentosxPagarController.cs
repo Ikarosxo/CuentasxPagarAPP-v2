@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
 using Newtonsoft.Json.Linq;
+using System.Net;
 
 namespace CuentasxPagarAPP_v2.Controllers
 {
@@ -24,10 +25,23 @@ namespace CuentasxPagarAPP_v2.Controllers
         }
 
         // GET: DocumentosxPagar
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? searchMonto, DateTime? searchDate)
         {
-            var appDbContext = _context.DocumentosxPagar.Include(d => d.Proveedor);
-            return View(await appDbContext.ToListAsync());
+            var docxpagar = from c in _context.DocumentosxPagar.Include(d => d.Proveedor)
+                            select c;
+
+            if (searchDate.HasValue)
+            {
+                docxpagar = docxpagar.Where(c => c.FechaDocumento == searchDate.Value
+                                              || c.FechaRegistro == searchDate.Value);
+            }
+
+            if (searchMonto.HasValue)
+            {
+                docxpagar = docxpagar.Where(c => c.Monto == searchMonto.Value);
+            }
+
+            return View(await docxpagar.ToListAsync());
         }
 
         // GET: DocumentosxPagar/Details/5
@@ -201,7 +215,7 @@ namespace CuentasxPagarAPP_v2.Controllers
             using (var httpClient = new HttpClient())
             {
                 // Establecer la URL del servicio web donde se enviará el asiento contable
-                httpClient.BaseAddress = new Uri("http://localhost:3000/contable");
+                httpClient.BaseAddress = new Uri("http://localhost:3000/api/cuentasxpagar/contabilizar");
 
                 // Configurar el encabezado de la petición HTTP
                 httpClient.DefaultRequestHeaders.Accept.Clear();
@@ -213,14 +227,24 @@ namespace CuentasxPagarAPP_v2.Controllers
                 // Enviar la petición HTTP al servicio web
                 var response = await httpClient.PostAsync(httpClient.BaseAddress, content);
 
-                // Leer el código de estado de la respuesta HTTP
-                int statusCode = (int)response.StatusCode;
-
-                // Mostrar un mensaje emergente con el código de estado de la respuesta HTTP
-                TempData["StatusMessage"] = $"HTTP Status: {statusCode}";
+                if (response.StatusCode == HttpStatusCode.Created)
+                {
+                    TempData["Message"] = "El documento se ha creado correctamente." + response.StatusCode;
+                    return RedirectToAction(nameof(Index));
+                }
+                else if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    TempData["Message"] = "Ha ocurrido un error al crear el documento. Por favor revise los datos ingresados." + response.StatusCode;
+                    return View(Index);
+                }
+                else
+                {
+                    TempData["Message"] = "Ha ocurrido un error inesperado." + response.StatusCode;
+                    return RedirectToAction(nameof(Index));
+                }
 
                 // Redirigir al usuario de vuelta a la lista de documentos
-                return RedirectToAction(nameof(Index));
+                //return RedirectToAction(nameof(Index));
             }
         }
     }

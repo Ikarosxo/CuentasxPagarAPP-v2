@@ -1,14 +1,29 @@
 ﻿@model IEnumerable<CuentasxPagarAPP_v2.Models.DocumentoxPagar>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Listado Documentos";
 }
 
-<h1>Index</h1>
+<h1>Listado de Documento por Pagar</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Añadir Documento por Pagar </a>
 </p>
+
+<form asp-action="Index" method="get" class="col-md-4 offset-md-8">
+        <div class="form-group">
+            <label for="searchDate">Buscar por fecha:</label>
+            <input type="date" id="searchDate" name="searchDate" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="searchMonto">Buscar por monto:</label>
+            <input type="number" id="searchNumero" name="searchMonto" class="form-control">
+        </div>
+        <div style="text-align: right">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+        </div>
+        
+</form>
 <table class="table">
     <thead>
         <tr>
@@ -60,9 +75,9 @@
                         <button type="submit" class="btn btn-primary contabilizar">Contabilizar</button>
                     </form>
 
-                <a asp-action="Edit" asp-route-id="@item.NumDocument">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.NumDocument">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.NumDocument">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.NumDocument" class="btn btn-warning">Editar</a> |
+                <a asp-action="Details" asp-route-id="@item.NumDocument" class="btn btn-success">Detalles</a> |
+                <a asp-action="Delete" asp-route-id="@item.NumDocument" class="btn btn-danger">Eliminar</a>
             </td>
         </tr>
 
@@ -75,7 +90,7 @@
 
 <script>
     // Obtener el valor del TempData y asignarlo al elemento div
-    var mensaje = '@TempData["StatusMessage"]';
+    var mensaje = '@TempData["Message"]';
     var mensajeDiv = document.getElementById("mensaje");
     mensajeDiv.innerText = mensaje;
 

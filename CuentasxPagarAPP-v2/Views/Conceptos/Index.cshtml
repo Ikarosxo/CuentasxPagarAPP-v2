@@ -1,14 +1,24 @@
 ﻿@model IEnumerable<CuentasxPagarAPP_v2.Models.Concepto>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Listado Conceptos";
 }
 
-<h1>Index</h1>
+<h1 class="text-center">Listado de Conceptos</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="btn btn-primary" asp-action="Create">Añadir Concepto</a>
 </p>
+
+<div style="text-align: right">
+    <form asp-controller="Conceptos" asp-action="Index">
+        <p>
+            <input type="text" name="SearchString" />
+            <input type="submit" value="Buscar" class="btn btn-primary" />
+        </p>
+    </form>
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -31,9 +41,9 @@
                 @Html.DisplayFor(modelItem => item.Estado)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.IdConcepto">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdConcepto">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdConcepto">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.IdConcepto" class="btn btn-warning">Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.IdConcepto" class="btn btn-success">Detalles</a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdConcepto" class="btn btn-danger">Eliminar</a>
             </td>
         </tr>
 }

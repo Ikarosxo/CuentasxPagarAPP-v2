@@ -20,11 +20,18 @@ namespace CuentasxPagarAPP_v2.Controllers
         }
 
         // GET: Conceptos
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(String searchString)
         {
-              return _context.Conceptos != null ? 
-                          View(await _context.Conceptos.ToListAsync()) :
-                          Problem("Entity set 'AppDbContext.Conceptos'  is null.");
+            var conceptos = from c in _context.Conceptos
+                            select c;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                conceptos = conceptos.Where(c => c.Descripcion.Contains(searchString)
+                                              || c.Estado.Contains(searchString));
+            }
+
+            return View(await conceptos.ToListAsync());
         }
 
         // GET: Conceptos/Details/5

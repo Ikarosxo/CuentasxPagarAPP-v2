@@ -1,14 +1,29 @@
 ﻿@model IEnumerable<CuentasxPagarAPP_v2.Models.Proveedor>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Listado Proveedores";
 }
 
-<h1>Index</h1>
+<h1>Listado de Proveedores</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Añadir Proveedor</a>
 </p>
+
+<form asp-action="Index" method="get" class="col-md-4 offset-md-8">
+    <div class="form-group">
+        <label for="searchBalance">Buscar por balance:</label>
+        <input type="number" id="searchBalance" name="searchBalance" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="searchString">Buscar por caracteristica:</label>
+        <input type="text" id="searchString" name="SearchString" class="form-control">
+    </div>
+    <div style="text-align: right">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </div>
+
+</form>
 <table class="table">
     <thead>
         <tr>
@@ -49,9 +64,9 @@
                 @Html.DisplayFor(modelItem => item.Estado)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.IdProveedor">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdProveedor">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdProveedor">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.IdProveedor" class="btn btn-warning">Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.IdProveedor" class="btn btn-success">Detalles</a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdProveedor" class="btn btn-danger">Eliminar</a>
             </td>
         </tr>
 }

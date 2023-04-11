@@ -21,11 +21,25 @@ namespace CuentasxPagarAPP_v2.Controllers
         }
 
         // GET: Proveedores
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(String searchString, int? searchBalance)
         {
-              return _context.Proveedores != null ? 
-                          View(await _context.Proveedores.ToListAsync()) :
-                          Problem("Entity set 'AppDbContext.Proveedores'  is null.");
+            var proveedores = from c in _context.Proveedores
+                              select c;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                proveedores = proveedores.Where(c => c.Nombre.Contains(searchString)
+                                                  || c.TipoPersona.Contains(searchString)
+                                                  || c.CedulaRNC.Contains(searchString)
+                                                  || c.Estado.Contains(searchString));
+            }
+
+            if (searchBalance.HasValue)
+            {
+                proveedores = proveedores.Where(c => c.Balance == searchBalance.Value);
+            }
+
+            return View(await proveedores.ToListAsync());
         }
 
         // GET: Proveedores/Details/5
