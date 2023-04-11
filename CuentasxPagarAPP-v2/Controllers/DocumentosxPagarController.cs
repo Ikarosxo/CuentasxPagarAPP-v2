@@ -48,7 +48,7 @@ namespace CuentasxPagarAPP_v2.Controllers
         // GET: DocumentosxPagar/Create
         public IActionResult Create()
         {
-            ViewData["IdProveedor"] = new SelectList(_context.Proveedores, "IdProveedor", "Estado");
+            ViewData["IdProveedor"] = new SelectList(_context.Proveedores, "IdProveedor", "Nombre");
             return View();
         }
 
@@ -65,7 +65,7 @@ namespace CuentasxPagarAPP_v2.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdProveedor"] = new SelectList(_context.Proveedores, "IdProveedor", "Estado", documentoxPagar.IdProveedor);
+            ViewData["IdProveedor"] = new SelectList(_context.Proveedores, "IdProveedor", "Nombre", documentoxPagar.IdProveedor);
             return View(documentoxPagar);
         }
 
@@ -82,7 +82,7 @@ namespace CuentasxPagarAPP_v2.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdProveedor"] = new SelectList(_context.Proveedores, "IdProveedor", "Estado", documentoxPagar.IdProveedor);
+            ViewData["IdProveedor"] = new SelectList(_context.Proveedores, "IdProveedor", "Nombre", documentoxPagar.IdProveedor);
             return View(documentoxPagar);
         }
 
@@ -118,7 +118,7 @@ namespace CuentasxPagarAPP_v2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdProveedor"] = new SelectList(_context.Proveedores, "IdProveedor", "Estado", documentoxPagar.IdProveedor);
+            ViewData["IdProveedor"] = new SelectList(_context.Proveedores, "IdProveedor", "Nombre", documentoxPagar.IdProveedor);
             return View(documentoxPagar);
         }
 

@@ -37,7 +37,7 @@ namespace CuentasxPagarAPP_v2.Models
         public int IdProveedor { get; set; }
 
         [ForeignKey("IdProveedor")]
-        public Proveedor Proveedor { get; set; }
+        public Proveedor? Proveedor { get; set; }
 
         [Required(ErrorMessage = "Seleccione el estado del documento")]
         [Display(Name = "Estado del Documento")]
