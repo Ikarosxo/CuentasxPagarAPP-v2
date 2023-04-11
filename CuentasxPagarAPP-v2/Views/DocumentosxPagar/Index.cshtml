@@ -30,6 +30,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Estado)
             </th>
+
             <th></th>
         </tr>
     </thead>
@@ -55,11 +56,31 @@
                 @Html.DisplayFor(modelItem => item.Estado)
             </td>
             <td>
+                    <form method="post" asp-action="Contabilizar" asp-route-id="@item.NumDocument" asp-route-method="POST">
+                        <button type="submit" class="btn btn-primary contabilizar">Contabilizar</button>
+                    </form>
+
                 <a asp-action="Edit" asp-route-id="@item.NumDocument">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.NumDocument">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.NumDocument">Delete</a>
             </td>
         </tr>
+
 }
     </tbody>
 </table>
+
+<div id="mensaje" class="alert alert-success" style="display:none;"></div>
+
+
+<script>
+    // Obtener el valor del TempData y asignarlo al elemento div
+    var mensaje = '@TempData["StatusMessage"]';
+    var mensajeDiv = document.getElementById("mensaje");
+    mensajeDiv.innerText = mensaje;
+
+    // Si el mensaje no está vacío, mostrar el elemento div
+    if (mensaje.trim() != "") {
+        mensajeDiv.style.display = "block";
+    }
+</script>

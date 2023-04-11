@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CuentasxPagarAPP_v2.Context;
 using CuentasxPagarAPP_v2.Models;
+using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using System.Text;
+using Newtonsoft.Json.Linq;
 
 namespace CuentasxPagarAPP_v2.Controllers
 {
@@ -164,5 +168,61 @@ namespace CuentasxPagarAPP_v2.Controllers
         {
           return (_context.DocumentosxPagar?.Any(e => e.NumDocument == id)).GetValueOrDefault();
         }
+
+        // POST: DocumentosxPagar/Contabilizar/5
+        [HttpPost]
+        public async Task<IActionResult> Contabilizar(int id)
+        {
+            // Buscar el documento correspondiente al id
+            var documentoxPagar = await _context.DocumentosxPagar.FindAsync(id);
+            if (documentoxPagar == null)
+            {
+                return NotFound();
+            }
+
+                // Generar el asiento contable
+            string nombreAux = "CuentaxPagar " + documentoxPagar.IdProveedor;
+            string origen = documentoxPagar.Estado == "Pendiente" ? "CR" : "DB";
+            decimal monto = documentoxPagar.Monto;
+
+            var asientoContable = new
+            {
+                id_aux = 6,
+                nombre_aux = nombreAux,
+                cuenta = 2,
+                origen = origen,
+                monto = monto
+            };
+
+            // Convertir el asiento contable a formato JSON
+            var asientoContableJSON = JsonConvert.SerializeObject(asientoContable);
+
+            // Crear un objeto HttpClient para realizar la petición HTTP
+            using (var httpClient = new HttpClient())
+            {
+                // Establecer la URL del servicio web donde se enviará el asiento contable
+                httpClient.BaseAddress = new Uri("http://localhost:3000/contable");
+
+                // Configurar el encabezado de la petición HTTP
+                httpClient.DefaultRequestHeaders.Accept.Clear();
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                // Crear el contenido de la petición HTTP con el asiento contable en formato JSON
+                var content = new StringContent(asientoContableJSON, Encoding.UTF8, "application/json");
+
+                // Enviar la petición HTTP al servicio web
+                var response = await httpClient.PostAsync(httpClient.BaseAddress, content);
+
+                // Leer el código de estado de la respuesta HTTP
+                int statusCode = (int)response.StatusCode;
+
+                // Mostrar un mensaje emergente con el código de estado de la respuesta HTTP
+                TempData["StatusMessage"] = $"HTTP Status: {statusCode}";
+
+                // Redirigir al usuario de vuelta a la lista de documentos
+                return RedirectToAction(nameof(Index));
+            }
+        }
     }
+
 }
