@@ -228,7 +228,7 @@ namespace CuentasxPagarAPP_v2.Controllers
                 else if (response.StatusCode == HttpStatusCode.BadRequest)
                 {
                     TempData["Message"] = "Ha ocurrido un error al crear el documento. Por favor revise los datos ingresados. " + response.StatusCode;
-                    return View(Index);
+                    return RedirectToAction(nameof(Index));
                 }
                 else
                 {
