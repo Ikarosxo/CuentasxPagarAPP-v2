@@ -194,7 +194,7 @@ namespace CuentasxPagarAPP_v2.Controllers
                 return NotFound();
             }
 
-            string nombreAux = "CuentaxPagar " + documentoxPagar.IdProveedor;
+            string nombreAux = "Cuenta por Pagar " + documentoxPagar.IdProveedor;
             string origen = documentoxPagar.Estado == "Pendiente" ? "CR" : "DB";
             decimal monto = documentoxPagar.Monto;
 
