@@ -26,18 +26,18 @@ namespace CuentasxPagarAPP_v2.Controllers
             var proveedores = from c in _context.Proveedores
                               select c;
 
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                proveedores = proveedores.Where(c => c.Nombre.Contains(searchString)
-                                                  || c.TipoPersona.Contains(searchString)
-                                                  || c.CedulaRNC.Contains(searchString)
-                                                  || c.Estado.Contains(searchString));
-            }
+            //if (!String.IsNullOrEmpty(searchString))
+            //{
+            //    proveedores = proveedores.Where(c => c.Nombre.Contains(searchString)
+            //                                      || c.TipoPersona.Contains(searchString)
+            //                                      || c.CedulaRNC.Contains(searchString)
+            //                                      || c.Estado.Contains(searchString));
+            //}
 
-            if (searchBalance.HasValue)
-            {
-                proveedores = proveedores.Where(c => c.Balance == searchBalance.Value);
-            }
+            //if (searchBalance.HasValue)
+            //{
+            //    proveedores = proveedores.Where(c => c.Balance == searchBalance.Value);
+            //}
 
             return View(await proveedores.ToListAsync());
         }

@@ -30,17 +30,17 @@ namespace CuentasxPagarAPP_v2.Controllers
             var docxpagar = from c in _context.DocumentosxPagar.Include(d => d.Proveedor)
                             select c;
 
-            //buscador
-            if (searchDate.HasValue)
-            {
-                docxpagar = docxpagar.Where(c => c.FechaDocumento == searchDate.Value
-                                              || c.FechaRegistro == searchDate.Value);
-            }
+            ////buscador
+            //if (searchDate.HasValue)
+            //{
+            //    docxpagar = docxpagar.Where(c => c.FechaDocumento == searchDate.Value
+            //                                  || c.FechaRegistro == searchDate.Value);
+            //}
 
-            if (searchMonto.HasValue)
-            {
-                docxpagar = docxpagar.Where(c => c.Monto == searchMonto.Value);
-            }
+            //if (searchMonto.HasValue)
+            //{
+            //    docxpagar = docxpagar.Where(c => c.Monto == searchMonto.Value);
+            //}
 
             return View(await docxpagar.ToListAsync());
         }
