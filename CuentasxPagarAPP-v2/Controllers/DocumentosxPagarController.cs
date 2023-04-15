@@ -30,6 +30,7 @@ namespace CuentasxPagarAPP_v2.Controllers
             var docxpagar = from c in _context.DocumentosxPagar.Include(d => d.Proveedor)
                             select c;
 
+            //buscador
             if (searchDate.HasValue)
             {
                 docxpagar = docxpagar.Where(c => c.FechaDocumento == searchDate.Value
@@ -183,18 +184,16 @@ namespace CuentasxPagarAPP_v2.Controllers
           return (_context.DocumentosxPagar?.Any(e => e.NumDocument == id)).GetValueOrDefault();
         }
 
-        // POST: DocumentosxPagar/Contabilizar/5
+        // POST
         [HttpPost]
         public async Task<IActionResult> Contabilizar(int id)
         {
-            // Buscar el documento correspondiente al id
             var documentoxPagar = await _context.DocumentosxPagar.FindAsync(id);
             if (documentoxPagar == null)
             {
                 return NotFound();
             }
 
-                // Generar el asiento contable
             string nombreAux = "CuentaxPagar " + documentoxPagar.IdProveedor;
             string origen = documentoxPagar.Estado == "Pendiente" ? "CR" : "DB";
             decimal monto = documentoxPagar.Monto;
@@ -208,43 +207,34 @@ namespace CuentasxPagarAPP_v2.Controllers
                 monto = monto
             };
 
-            // Convertir el asiento contable a formato JSON
             var asientoContableJSON = JsonConvert.SerializeObject(asientoContable);
 
-            // Crear un objeto HttpClient para realizar la petición HTTP
             using (var httpClient = new HttpClient())
             {
-                // Establecer la URL del servicio web donde se enviará el asiento contable
-                httpClient.BaseAddress = new Uri("http://localhost:3000/api/cuentasxpagar/contabilizar");
+                httpClient.BaseAddress = new Uri("https://contabilidadapi.azurewebsites.net/api_aux/SistCont/");
 
-                // Configurar el encabezado de la petición HTTP
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                // Crear el contenido de la petición HTTP con el asiento contable en formato JSON
                 var content = new StringContent(asientoContableJSON, Encoding.UTF8, "application/json");
 
-                // Enviar la petición HTTP al servicio web
                 var response = await httpClient.PostAsync(httpClient.BaseAddress, content);
 
                 if (response.StatusCode == HttpStatusCode.Created)
                 {
-                    TempData["Message"] = "El documento se ha creado correctamente." + response.StatusCode;
+                    TempData["Message"] = "El documento se ha creado correctamente. " + response.StatusCode;
                     return RedirectToAction(nameof(Index));
                 }
                 else if (response.StatusCode == HttpStatusCode.BadRequest)
                 {
-                    TempData["Message"] = "Ha ocurrido un error al crear el documento. Por favor revise los datos ingresados." + response.StatusCode;
+                    TempData["Message"] = "Ha ocurrido un error al crear el documento. Por favor revise los datos ingresados. " + response.StatusCode;
                     return View(Index);
                 }
                 else
                 {
-                    TempData["Message"] = "Ha ocurrido un error inesperado." + response.StatusCode;
+                    TempData["Message"] = "Ha ocurrido un error inesperado. " + response.StatusCode;
                     return RedirectToAction(nameof(Index));
                 }
-
-                // Redirigir al usuario de vuelta a la lista de documentos
-                //return RedirectToAction(nameof(Index));
             }
         }
     }
