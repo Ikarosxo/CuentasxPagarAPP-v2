@@ -22,7 +22,7 @@ namespace CuentasxPagarAPP_v2.Controllers
         // GET: Conceptos
         public async Task<IActionResult> Index(String searchString)
         {
-            searchbar
+            //searchbar
             var conceptos = from c in _context.Conceptos
                             select c;
 
